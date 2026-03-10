@@ -36,14 +36,6 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
-mybatis {
-    mapperLocations = 'classpath:mapper/*.xml'
-    typeAliasesPackage = 'com.example.image.entity'
-    configuration {
-        mapUnderscoreToCamelCase = true
-    }
-}
-
 tasks.named('test') {
     useJUnitPlatform()
 }
