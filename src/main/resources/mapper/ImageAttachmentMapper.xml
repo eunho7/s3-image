@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.image.mapper.ImageAttachmentMapper">
+
+    <insert id="insertImage" parameterType="com.example.image.entity.ImageAttachment" useGeneratedKeys="true" keyProperty="imageSeq">
+        INSERT INTO tb_image_attachment (
+            original_file_name,
+            stored_file_name,
+            s3_key,
+            content_type,
+            file_size,
+            alt_text,
+            description,
+            use_yn,
+            create_user,
+            create_dttm,
+            update_user,
+            update_dttm
+        ) VALUES (
+            #{originalFileName},
+            #{storedFileName},
+            #{s3Key},
+            #{contentType},
+            #{fileSize},
+            #{altText},
+            #{description},
+            #{useYn},
+            #{createUser},
+            NOW(),
+            #{updateUser},
+            NOW()
+        )
+    </insert>
+
+    <select id="findByImageSeq" resultType="com.example.image.entity.ImageAttachment">
+        SELECT
+            image_seq,
+            original_file_name,
+            stored_file_name,
+            s3_key,
+            content_type,
+            file_size,
+            alt_text,
+            description,
+            use_yn,
+            create_user,
+            create_dttm,
+            update_user,
+            update_dttm
+        FROM tb_image_attachment
+        WHERE image_seq = #{imageSeq}
+    </select>
+
+    <select id="findAllActiveImages" resultType="com.example.image.entity.ImageAttachment">
+        SELECT
+            image_seq,
+            original_file_name,
+            stored_file_name,
+            s3_key,
+            content_type,
+            file_size,
+            alt_text,
+            description,
+            use_yn,
+            create_user,
+            create_dttm,
+            update_user,
+            update_dttm
+        FROM tb_image_attachment
+        WHERE use_yn = 'Y'
+        ORDER BY image_seq DESC
+    </select>
+
+    <update id="updateMetadata" parameterType="com.example.image.entity.ImageAttachment">
+        UPDATE tb_image_attachment
+        SET
+            alt_text = #{altText},
+            description = #{description},
+            update_user = #{updateUser},
+            update_dttm = NOW()
+        WHERE image_seq = #{imageSeq}
+          AND use_yn = 'Y'
+    </update>
+
+    <update id="softDeleteImage">
+        UPDATE tb_image_attachment
+        SET
+            use_yn = 'N',
+            update_user = #{updateUser},
+            update_dttm = NOW()
+        WHERE image_seq = #{imageSeq}
+          AND use_yn = 'Y'
+    </update>
+
+</mapper>
